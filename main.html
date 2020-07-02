@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Vulkan</title>
+
+    <style type="text/css">
+        .tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color: #9efea6;color: #329921;background-color: #66ff5c;}
+        .tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color: #2c56fe;color: #2c56fe;background-color: #2bfec6;}
+
+        * {margin: 0; padding: 0;}
+
+#form{
+   position:fixed;
+   top:50%;
+   left:50%;
+   width:250px;
+}
+img.thumbnail {
+	width: 100px;
+	height: 70px;
+    background: url(http://goo.gl/vyAs27) no-repeat scroll 0 0;
+	}
+
+div {
+  margin: 20px;
+}
+
+ul {
+  list-style-type: none;
+  width: 500px;
+}
+
+h3 {
+  font: bold 20px/1.5 Helvetica, Verdana, sans-serif;
+}
+
+li img {
+  float: left;
+  margin: 0 15px 0 0;
+}
+
+li p {
+  font: 200 12px/1.5 Georgia, Times New Roman, serif;
+}
+
+li {
+  padding: 10px;
+  overflow: auto;
+}
+
+li:hover {
+  background: #eee;
+  cursor: pointer;
+}
+
+    </style>
+
+
+
+</head>
+<body>
+
+{% if myuser %}
+<h1 style="color: #2c56fe; text-align: center;">Home! &nbsp;&nbsp;&nbsp;
+    <p style="text-align: center;">Login User id: {{ myuser.user_name }} </p>
+
+    <button  style="height:30px; width:100px"  onclick="location.href='/editprofile?user_id={{myuser.key.id()}}'" type="button">
+        View Profile
+    </button>
+
+    <button  style="height:30px; width:90px"  onclick="location.href='{{ url }}'" type="button">
+        Logout
+    </button>`
+</h1>
+
+{% if myuser.user_name | length == 0 %}
+
+<form method="Get" >
+</br>
+        <p style="text-align: center;"><strong style="color: #000;">You have to set userid  </strong> &nbsp;&nbsp;&nbsp;
+        <input name="user_name" type="text" value="" pattern="[A-Za-z]*"  align="center" title="Alphabet characters only" minlength=3>
+        </br></br>
+            <textarea rows="4" cols="50" name="bio_text" maxlength="250"></textarea>
+            </br>
+            <input type="submit" value="Set Username" />
+        </p>
+
+
+</form>
+
+{% else %}
+
+<br /></br></br></br>
+
+<form method="Get">
+
+    <p style="text-align: center;"><strong style="color: #000;">Search User/Post </strong> &nbsp;&nbsp;&nbsp;
+        <input name="search_text" type="text" value="" pattern="[A-Za-z]*"  align="center" title="Alphabet characters only" minlength=2>&nbsp;&nbsp;&nbsp;
+        <select name="query_type">
+            <option value="user">All</option>
+            <option value="user">User</option>
+            <option value="post">Post</option>
+        </select>
+        <input type="submit" value="Search" />
+
+</form>
+</br></br>
+
+
+<form style="text-align: center;" action="{{ upload_url }}" method="Post" enctype="multipart/form-data" >
+
+&nbsp;&nbsp;<textarea  rows="4" cols="50" name="share_text" maxlength="250">{% if edittweet %}{{edittweet.share_text}}{% endif %}</textarea>
+</br>
+        &nbsp;&nbsp;<input type="file" name="share_image" accept="image/*"/>
+    &nbsp;&nbsp;&nbsp;<input type="submit" value="{% if edittweet  %}Update{% else %}Share{% endif %}" name = "share_type"/><input type="hidden" value="{% if edittweet  %} {{edittweet.key.id()}}{% endif %}" name = "edit_tweet_id"/>
+</form>
+
+
+<div align="center">
+  <ul>
+{% for tweet in tweets %}
+      <form method="Get">
+<li>
+
+      <h3 align="left"><a href="/editprofile?user_id={{ tweet.user_id }}">{{ tweet.user_name }}</a></h3>
+      <img src="/view_photo/{{tweet.avatar}}" class="thumbnail">
+      <p align="left">{{tweet.share_text}}</p>
+    </br></br>
+    <p align="right"> {{tweet.time}}</p>
+
+
+    {% if tweet.user_id ==  myuser.key.id() %}
+        <input  type="hidden" value="{{ tweet.key.id() }}" name = "tweet_id" hidden/>
+        <input  type="submit" value="Delete" name = "query_type"/>
+        <input  type="submit" value="Edit" name = "query_type"/>
+    {% endif %}
+
+</li>
+          </form>
+
+{% endfor %}
+  </ul>
+</div>
+
+
+{% endif %}
+
+{% else %}
+<h1 style="color: #2c56fe; text-align: center;">Welcome to Twitter!
+    <button  style="height:40px; width:80px"  onclick="location.href='{{ url }}'" type="button">
+        LOGIN
+    </button>
+</h1>
+<p style="text-align: center;"><strong style="color: #000;">You must login </strong></p>
+
+{% endif %}
+
+
+</body>
+</html>
+
+

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+
+
+    div {
+  margin: 20px;
+}
+
+    img.thumbnail {
+	width: 100px;
+	height: 70px;
+    background: url(http://goo.gl/vyAs27) no-repeat scroll 0 0;
+	}
+ul {
+  list-style-type: none;
+  width: 500px;
+}
+
+h3 {
+  font: bold 20px/1.5 Helvetica, Verdana, sans-serif;
+}
+
+li img {
+  float: left;
+  margin: 0 15px 0 0;
+}
+
+li p {
+  font: 200 12px/1.5 Georgia, Times New Roman, serif;
+}
+
+li {
+  padding: 10px;
+  overflow: auto;
+}
+
+li:hover {
+  background: #eee;
+  cursor: pointer;
+}</style>
+</head>
+<body>
+
+
+<form action="/editprofile" method="post" >
+
+    <input type="submit" value="Back" name="cancel" />
+
+    <div >
+        <div class="left">
+            User Name: <input name="user_name" type="text" value= {{myuser.user_name}} disabled> <br />
+        </div>
+    </div>
+
+    <div>
+        <div class="left">
+            First Name :<input name="user_first_name" type="text" value="{{myuser.first_name}}" {% if otheruserprofile %} disabled {%endif%}}> <br />
+        </div>
+    </div>
+
+        <div>
+        <div class="left">
+            Last Name:  <input name="user_last_name" type="text" value="{{myuser.last_name}}" {% if otheruserprofile %} disabled {%endif%}}> <br />
+        </div>
+    </div>
+
+    <div>
+        <div class="left">
+            Date of birth:<input name="date" type="date" value="{{myuser.dob}}" {% if otheruserprofile %} disabled {%endif%}}> <br />
+        </div>
+    </div>
+    </br>
+
+
+    {% if otheruserprofile %}{%else%}
+    <input type="hidden" value="{{myuser.key.id()}}" name="user_id"/>
+    <input type="submit" value="Update" name="update_user" />
+
+    {%endif%}
+
+    <h4 align="center">MyBio:  {{myuser.bio_text}}</h4>
+
+    </form>
+
+    <div align="center">
+    {% if otheruserprofile %}
+    <form action="/editprofile" method="post" >
+    <input type="submit" value="{{follow}}" name = "follow_user" align="center"/>
+    <input type="hidden" value="{{myuser.key.id()}}" name="user_id"/>
+    </form>
+    {%endif%}
+    </div>
+
+    </br>
+    </br>
+
+
+<h2 align="center">User Feeds</h2>
+    <div align="center">
+  <ul>
+{% for tweet in tweets %}
+      <form method="Get">
+<li>
+
+      <h3 align="left"><a href="/editprofile?user_id={{ tweet.user_id }}">{{ tweet.user_name }}</a></h3>
+      <img src="/view_photo/{{tweet.avatar}}" class="thumbnail">
+      <p align="left">{{tweet.share_text}}</p>
+    </br></br>
+    <p align="right">{{tweet.time}} </p>
+
+
+    {% if tweet.user_id ==  myuser.key.id() %}
+        <input  type="hidden" value="{{ tweet.key.id() }}" name = "tweet_id" hidden/>
+        <input  type="submit" value="Delete" name = "query_type"/>
+        <input  type="submit" value="Edit" name = "query_type"/>
+    {% endif %}
+
+</li>
+          </form>
+
+{% endfor %}
+  </ul>
+</div>
+
+</div>
+</body>
+</html>
